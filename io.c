@@ -36,14 +36,13 @@ void savepositions(int num)
   char buf[500];
   int i, j, *temp, n, filenr, gr, ngroups, masterTask, lastTask;
 
-  //DY: type6->type4
+  //RW: Convert sink particle from runtime type6 to type4 for snapshot output
     for(i = 0; i < NumPart; i++){
       if(P[i].ID==id0){ 
 	 P[i].Type=4;
 	 printf("\nXXXXXX convert back to type 4...\n");
       }
     }
-
 
   t0 = second();
 
@@ -128,7 +127,7 @@ void savepositions(int num)
 
   All.CPU_Snapshot += timediff(t0, t1);
 
-  //DY: type4->type6
+  //RW: once the snapshot output finishes, convert sink particle type back to 6 to be used in the next timestep
     for(i = 0; i < NumPart; i++){
       if(P[i].ID==id0){ 
 	 P[i].Type=6;

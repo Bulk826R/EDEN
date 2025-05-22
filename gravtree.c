@@ -7,8 +7,10 @@
 #include "allvars.h"
 #include "proto.h"
 
+// RW Function calculating disk potential acceleration given cyclindrical coordinates (R, z) 
 // Pos: comoving coordinates in units h^-1 Mpc
 // physical pos: Pos*a/h = Pos*All.Time/All.HubbleParam
+// Stellar mass msz: loaded UM M* history, units in 1e10 Msun h^-1
 double AccRz(double R, double z, int type, double msz, double fstar) // comoving R,z in units Mpc/h
 {
    // parameters [M]=1e10 Msun/h; [L]=Mpc/h
@@ -27,12 +29,16 @@ double AccRz(double R, double z, int type, double msz, double fstar) // comoving
    //----------------------
    double redshift = 1.0/All.Time -1.0;   
    double Msz = msz*All.HubbleParam/1e10; //UM Mstar for MW host
-   //double Mdsz = Mds0/(MB0+Mds0+Mdg0)*Msz; 
-   //double Mdgz = Mdg0/(MB0+Mds0+Mdg0)*Msz; 
-   //double MBz  = MB0 /(MB0+Mds0+Mdg0)*Msz; 
-   double Mdsz = Mds0/(MB0+Mds0)*Msz; 
-   double MBz  = MB0 /(MB0+Mds0)*Msz; 
-   double Mdgz = (Msz / fstar) * (1. - fstar);
+   //RW Default mass component ratios
+   double Mdsz = Mds0/(MB0+Mds0+Mdg0)*Msz; 
+   double Mdgz = Mdg0/(MB0+Mds0+Mdg0)*Msz; 
+   double MBz  = MB0 /(MB0+Mds0+Mdg0)*Msz; 
+
+   //RW Gas mass following Guo et al. 2023 stellar mass fraction
+   //double Mdsz = Mds0/(MB0+Mds0)*Msz; 
+   //double MBz  = MB0 /(MB0+Mds0)*Msz; 
+   //double Mdgz = (Msz / fstar) * (1. - fstar);
+
    double Rdsz = Rds0*pow(1+redshift,0.28); //-0.72 -> 0.28 to take out scale factor, comoving
    double hdsz = hds0/Rds0*Rdsz;
    double Rdgz = Rdg0*pow(1+redshift,0.28); //-0.72 -> 0.28 to take out scale factor, comoving
@@ -489,9 +495,9 @@ void gravity_tree(void)
     }
 
 
-  // DY: external potential, following Volker's suggestion 
+  //RW External disk potential, following Volker's suggestion 
   double mstar_now = Mdisk;
-  double fstar_now = Fdisk;
+  double fstar_now = 1.; //RW Not used in the default EDEN version; we assume all the disk mass comes from UM-predicted M*
   double fx_disk = 0.;
   double fy_disk = 0.;
   double fz_disk = 0.;
@@ -537,7 +543,7 @@ void gravity_tree(void)
         else{
            itask=ThisTask;
            //printf("loop %d, task %d\n", i, ThisTask);
-           //Renormalizing the sink particle's acceleration to sink-disk combination
+           //RW Renormalizing the sink particle's acceleration to sink-disk combination
            P[i].GravAccel[0] *= P[i].Mass / (P[i].Mass + (mstar_now / fstar_now) * All.HubbleParam/1e10);
            P[i].GravAccel[1] *= P[i].Mass / (P[i].Mass + (mstar_now / fstar_now) * All.HubbleParam/1e10);
            P[i].GravAccel[2] *= P[i].Mass / (P[i].Mass + (mstar_now / fstar_now) * All.HubbleParam/1e10);
@@ -546,7 +552,7 @@ void gravity_tree(void)
 
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Allreduce(&itask, &otask, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-  //Applying the disk back reaction forces and adding it to the sink's accelerations
+  //RW Applying the disk back reaction forces and adding it to the sink's accelerations
   double Fx_disk;
   double Fy_disk;
   double Fz_disk; 
@@ -616,7 +622,7 @@ void set_softenings(void)
         All.SofteningTable[5] = All.SofteningBndryMaxPhys / All.Time;
       else
         All.SofteningTable[5] = All.SofteningBndry;
-      // DY for the sink particle
+      // RW softening for the sink particle
       if(All.SofteningSink * All.Time > All.SofteningSinkMaxPhys)
         All.SofteningTable[6] = All.SofteningSinkMaxPhys / All.Time;
       else
@@ -631,7 +637,7 @@ void set_softenings(void)
       All.SofteningTable[3] = All.SofteningBulge;
       All.SofteningTable[4] = All.SofteningStars;
       All.SofteningTable[5] = All.SofteningBndry;
-      // DY
+      // RW
       All.SofteningTable[6] = All.SofteningSink;
     }
 

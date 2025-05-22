@@ -6,13 +6,13 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>
-
+#include <unistd.h>
 #include "allvars.h"
 #include "proto.h"
 #include "halo_props.h"
 
+//RW Function that loads in UniverseMachine M* history for the MW host
 double Ms_UM(double z) {
-
   FILE *myFile1, *myFile2;
   int HALO_NO = HALO_ID;
   char buffer[1024];
@@ -25,11 +25,16 @@ double Ms_UM(double z) {
   char* halo_no_str = buffer;
   char fname1[1024];
   char fname2[1024];
-  char* file_head = "/sdf/home/y/ycwang/Gadget2_disk/um_sfh/Halo";
+
+  char cwd[1024]; //current working directory
+  getcwd(cwd, sizeof(cwd));
+  char file_head[1024];
+  snprintf(file_head, sizeof(file_head), "%s/um_sfh/Halo", cwd);
+
   char* file_tail1 = "8_Z.txt";
   char* file_tail2 = "8_Mstar.txt";
   snprintf(fname1, sizeof(fname1), "%s%s", file_head, halo_no_str);
-  snprintf(fname2, sizeof(fname2), "%s%s", file_head, halo_no_str);
+  snprintf(fname2,sizeof(fname2), "%s%s", file_head, halo_no_str);
   char* file_name1 = fname1;
   char* file_name2 = fname2;
   strcat(file_name1, file_tail1);
@@ -65,11 +70,18 @@ double Ms_UM(double z) {
   return pow(10., lgms_z);
 }
 
+//RW Semi-empirical stellar/(stellar+gas) fraction from NeutralUniverseMachine Guo et al. 2023
 double Fs_Guo(double z) {
+  char cwd[1024]; //current working directory
+  getcwd(cwd, sizeof(cwd));
+  char file_head[1024];
+  snprintf(file_head, sizeof(file_head), "%s/um_sfh", cwd);
 
   FILE *myFile1, *myFile2;
-  char* file1 = "/sdf/home/y/ycwang/Gadget2_disk/um_sfh/Guo_Z.txt";
-  char* file2 = "/sdf/home/y/ycwang/Gadget2_disk/um_sfh/Guo_Fstar.txt";
+  char file1[1024];
+  char file2[1024];
+  snprintf(file1, sizeof(file1), "%s/Guo_Z.txt", file_head);
+  snprintf(file2, sizeof(file2), "%s/Guo_Fstar.txt", file_head);
   myFile1 = fopen(file1, "r");
   myFile2 = fopen(file2, "r");
   int snap = 14;
@@ -143,7 +155,7 @@ void move_particles(int time0, int time1)
   int itask=0;
   int otask=0;
   for(i = 0; i < NumPart; i++){
-	// DY update disk center
+	// RW update disk center
 	if(P[i].ID==id0){
           double z_now = 1.0/All.Time - 1.0;
           Mdisk = Ms_UM(z_now);
@@ -167,7 +179,7 @@ void move_particles(int time0, int time1)
 	  itask=ThisTask;
 	}
   }
-  // Need to call on all tasks! 
+  //RW Need to call on all tasks and combine updates on the disk properties from all subprocess! 
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Allreduce(&itask, &otask, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 #ifdef DOUBLEPRECISION
