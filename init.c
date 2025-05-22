@@ -7,13 +7,14 @@
 #include "proto.h"
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>
+#include <unistd.h>
 
 /*! \file init.c
  *  \brief Code for initialisation of a simulation from initial conditions
  */
 
+//RW Function that loads in UniverseMachine M* history for the MW host
 double MS_UM(double z) {
-
   FILE *myFile1, *myFile2;
   int HALO_NO = HALO_ID;
   char buffer[1024];
@@ -26,7 +27,12 @@ double MS_UM(double z) {
   char* halo_no_str = buffer;
   char fname1[1024];
   char fname2[1024];
-  char* file_head = "/sdf/home/y/ycwang/Gadget2_disk/um_sfh/Halo";
+
+  char cwd[1024]; //current working directory
+  getcwd(cwd, sizeof(cwd));
+  char file_head[1024];
+  snprintf(file_head, sizeof(file_head), "%s/um_sfh/Halo", cwd);
+
   char* file_tail1 = "8_Z.txt";
   char* file_tail2 = "8_Mstar.txt";
   snprintf(fname1, sizeof(fname1), "%s%s", file_head, halo_no_str);
@@ -66,11 +72,18 @@ double MS_UM(double z) {
   return pow(10., lgms_z);
 }
 
+//RW Semi-empirical stellar/(stellar+gas) fraction from NeutralUniverseMachine Guo et al. 2023
 double FS_Guo(double z) {
+  char cwd[1024]; //current working directory
+  getcwd(cwd, sizeof(cwd));
+  char file_head[1024];
+  snprintf(file_head, sizeof(file_head), "%s/um_sfh", cwd);
 
   FILE *myFile1, *myFile2;
-  char* file1 = "/sdf/home/y/ycwang/Gadget2_disk/um_sfh/Guo_Z.txt";
-  char* file2 = "/sdf/home/y/ycwang/Gadget2_disk/um_sfh/Guo_Fstar.txt";
+  char file1[1024];
+  char file2[1024];
+  snprintf(file1, sizeof(file1), "%s/Guo_Z.txt", file_head);
+  snprintf(file2, sizeof(file2), "%s/Guo_Fstar.txt", file_head); 
   myFile1 = fopen(file1, "r");
   myFile2 = fopen(file2, "r");
   int snap = 14;
@@ -149,8 +162,8 @@ void init(void)
 
   set_softenings();
 
-// DY==============================================================
-  //RW: Move PartType4 that's closest to halo center at A_START to halo center, convert it to Type 6
+// RW==============================================================
+  //Move PartType4 that's closest to halo center at A_START to halo center, convert it to Type 6
   id0=SINK_ID; 
   int i0=-1;
   for(i = 0; i < NumPart; i++){
@@ -177,7 +190,7 @@ void init(void)
            ceny=P[i].Pos[1];
            cenz=P[i].Pos[2];
            P[i].Mass = 0.015; //+mdisk/1e10; //
-	   P[i].Type = 6; // DY convert the type from snapshots
+	   P[i].Type = 6; // RW convert the sink particle type from 4 to 6 during runtime
 	}
         i0=i;
      }
@@ -190,7 +203,7 @@ void init(void)
          return;
      }
   }
-// DY==============================================================
+// RW==============================================================
 
   All.NumCurrentTiStep = 0;	/* setup some counters */
   All.SnapshotFileCount = 0;
