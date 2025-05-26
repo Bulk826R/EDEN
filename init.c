@@ -177,7 +177,7 @@ void init(void)
            P[i].Pos[2]=cenz;
            double zz = 1./All.Time - 1.;
            Mdisk = MS_UM(zz); //Assign UM disk mass
-	   Fdisk = FS_Guo(zz); //Assign Guo stellar fraction 
+	   Fdisk = 1.; //Default UM gas fraction is 1.
            // 
 	   P[i].Vel[0]=HALO_VX/sqrt(All.Time);
 	   P[i].Vel[1]=HALO_VY/sqrt(All.Time);
