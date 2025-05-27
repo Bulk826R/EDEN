@@ -46,12 +46,12 @@ double AccRz(double R, double z, int type, double msz, double fstar) // comoving
    double rBz  = rB0*pow(1+redshift,0.28); //-0.72 -> 0.28 to take out scale factor, comoving
    //----------------------
    double vals,valg,valb;
-   if(type==0){ // minus acceleration along the z direction
+   if(type==0){ // negative acceleration along the z direction
       vals = Mdsz*z*pow(hdsz*hdsz + z*z, -0.5) * (Rdsz + pow(hdsz*hdsz + z*z, 0.5))*pow(R*R + pow(Rdsz + pow(hdsz*hdsz + z*z, 0.5), 2), -1.5);
       valg = Mdgz*z*pow(hdgz*hdgz + z*z, -0.5) * (Rdgz + pow(hdgz*hdgz + z*z, 0.5))*pow(R*R + pow(Rdgz + pow(hdgz*hdgz + z*z, 0.5), 2), -1.5);
       valb = MBz*z*pow(R*R + z*z, -0.5) * pow(rBz + pow(R*R + z*z, 0.5), -2);
    }
-   else{ // minus acceleration along the R direction
+   else{ // negative acceleration along the R direction
       vals = Mdsz*R*pow(R*R + pow(Rdsz + pow(hdsz*hdsz + z*z, 0.5), 2), -1.5);
       valg = Mdgz*R*pow(R*R + pow(Rdgz + pow(hdgz*hdgz + z*z, 0.5), 2), -1.5);
       valb = MBz*R*pow(R*R + z*z,-0.5) * pow(rBz + pow(R*R + z*z, 0.5), -2);
