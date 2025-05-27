@@ -1,4 +1,15 @@
-EDEN: Exploring Disks Embedded in N-body simulations 
+#EDEN
+
+
+
+
+
+
+
+
+
+
+Exploring Disks Embedded in N-body simulations (EDEN) 
 
 Copyright (C)2023-2025 Yunchong (Richie) Wang
 
@@ -23,14 +34,14 @@ Science/Documentation Paper: <https://arxiv.org/abs/2408.01487>
 ## Overview ##
 
 
-Exploring Disks Embedded in N-body (EDEN) simulations is a set of dark-matter-only cosmological zoom-in re-simulations with embedded disk potentials of Milky Way (MW)-mass hosts (M_{\rm vir} \sim 10^12M_{\odot}) from the Symphony Simulation compilation~(<https://web.stanford.edu/group/gfc/gfcsims/build/html/symphony_overview.html>). The goal of this project is to capture the range of additional tidal stripping effects on the subhalo population of MW-mass hosts given the range of baryonic disk masses and assembly histories allowed by observational constraints. To achieve such a goal, we update the successful and widely tested cosmological simulation code Gadget2~<https://wwwmpa.mpa-garching.mpg.de/galform/gadget/#license> with the ability to apply additional gravitational acceleration from a time-evolving analytic disk potential that mimics the baryonic galaxy disk. The benefits of such an approach are three-fold: 
+Exploring Disks Embedded in N-body (EDEN) simulations is a set of dark-matter-only cosmological zoom-in re-simulations with embedded disk potentials of Milky Way (MW)-mass hosts (M_{\rm vir} \sim 10^12M_{\odot}) from the Symphony Simulation compilation~(<https://web.stanford.edu/group/gfc/gfcsims/build/html/symphony_overview.html>). The goal of this project is to capture the range of additional tidal stripping effects on the subhalo population of MW-mass hosts given the range of baryonic disk masses and assembly histories allowed by observational constraints. To achieve such a goal, we update the successful and widely tested cosmological simulation code Gadget2~<https://wwwmpa.mpa-garching.mpg.de/galform/gadget> with the ability to apply additional gravitational acceleration from a time-evolving analytic disk potential that mimics the baryonic galaxy disk. The benefits of such an approach are three-fold: 
 
 +  Averting the smooth-particle-hydrodynamics solver of the code makes computation much faster and yields more generic results without being subject to a specific choice of subgrid physics.
 +  Evaluating accelerations from an analytic gravitational potential is fast and only adds O(n) time complexity to the N-body gravity tree solver.
 +  The growth history of the disk can be easily tweaked without changing any subgrid physics, flexible for theoretical experiments that varies the galaxy--halo connection.
 
 
-In EDEN, we assume that the MW-mass host's disk grows its mass following the predictions of the semi-empirical galaxy--halo connection model UniverseMachine (UM, <https://arxiv.org/abs/1806.07893>), which takes into account the correlation between galaxy star formation and halo assembly histories conditioned on halo mass (secondary halo bias). For more background and simulation results, please refer to the scientific publication of EDEN~(url{https://arxiv.org/abs/2408.01487}). EDEN simulation data can be accessed as part of the Symphony Simulation data release~(<https://web.stanford.edu/group/gfc/gfcsims/build/html/zoom_ins.html>). In the following, we introduce the detailed changes that we have made to Gadget2 to create EDEN and provide instructions for how to set up EDEN for re-simulating any generic cosmological simulation.
+In EDEN, we assume that the MW-mass host's disk grows its mass following the predictions of the semi-empirical galaxy--halo connection model UniverseMachine (UM, <https://arxiv.org/abs/1806.07893>), which takes into account the correlation between galaxy star formation and halo assembly histories conditioned on halo mass (secondary halo bias). For more background and simulation results, please refer to the scientific publication of EDEN~(<https://arxiv.org/abs/2408.01487>). EDEN simulation data can be accessed as part of the Symphony Simulation data release~(<https://web.stanford.edu/group/gfc/gfcsims/build/html/zoom_ins.html>). In the following, we introduce the detailed changes that we have made to Gadget2 to create EDEN and provide instructions for how to set up EDEN for re-simulating any generic cosmological simulation.
 
 ## New stuff in EDEN compared to Gadget2 ##
 
@@ -145,4 +156,7 @@ Here we provide a step-by-step guidance for running EDEN on your desired DMO sim
     If the user wants to experiment with different stellar mass or fraction models other than UM and NeuUM, one could easily do so by modifying the `Ms_UM` and `Fs_Guo` functions in `disk_mass.c`. To verify whether your new stellar mass history and stellar fraction models behave in the way you would expect, we have provided a testing script `test_um.c`, which can be compiled and run using the following command:
     
     +  `gcc disk_mass.c test_um.c -o test_um -lgsl -lgslcblas -lm && ./test_um`
-
+    
+    
+    
+    
