@@ -1,15 +1,4 @@
-#EDEN
-
-
-
-
-
-
-
-
-
-
-Exploring Disks Embedded in N-body simulations (EDEN) 
+EDEN: Exploring Disks Embedded in N-body simulations 
 
 Copyright (C)2023-2025 Yunchong (Richie) Wang
 
