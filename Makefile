@@ -239,9 +239,10 @@ OBJS   = main.o  run.o  predict.o begrun.o endrun.o global.o  \
 	 gravtree.o hydra.o  driftfac.o  \
 	 domain.o  allvars.o potential.o  \
          forcetree.o   peano.o gravtree_forcetest.o \
-	 pm_periodic.o pm_nonperiodic.o longrange.o 
+	 pm_periodic.o pm_nonperiodic.o longrange.o \
+	 disk_mass.o
 
-INCL   = allvars.h  proto.h  tags.h  Makefile
+INCL   = allvars.h  disk_mass.h proto.h  tags.h  Makefile
 
 
 CFLAGS = $(OPTIONS) $(GSL_INCL) $(FFTW_INCL) $(HDF5INCL)
