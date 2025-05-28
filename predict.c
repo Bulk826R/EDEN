@@ -54,8 +54,8 @@ void move_particles(int time0, int time1)
           double z_now = 1.0/All.Time - 1.0;
           Mdisk = Ms_UM(z_now);
           Mdisk *= HALO_NORM;
-	  Fdisk = Fs_Guo(z_now);
-	  Fdisk *= HALO_NORM;
+	  Fdisk = 1.;
+	  //Fdisk *= HALO_NORM;
 
 	  printf("Update disk center, a,m,h,pos,vphys, mstar, fstar:  "
 			 "%f %f %f   %f %f %f   %f %f %f  %f\n",
