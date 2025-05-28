@@ -74,7 +74,7 @@ void init(void)
            P[i].Pos[2]=cenz;
            double zz = 1./All.Time - 1.;
            Mdisk = Ms_UM(zz); //Assign UM disk mass
-	   Fdisk = 1.; //Default UM gas fraction is 1.
+	   Fdisk = Fs_Guo(zz); //NeutralUniverseMachine gas fraction
            // 
 	   P[i].Vel[0]=HALO_VX/sqrt(All.Time);
 	   P[i].Vel[1]=HALO_VY/sqrt(All.Time);
